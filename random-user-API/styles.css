@@ -165,7 +165,9 @@ p {
     width: 95vw;
   }
 }
-
+*:focus{
+  outline: 0;
+}
 /* container */
 .block {
   min-height: 50vh;
@@ -231,6 +233,7 @@ p {
   cursor: pointer;
   color: var(--clr-grey-5);
   transition: var(--transition);
+
 }
 .icon:hover {
   color: var(--clr-primary-5);
