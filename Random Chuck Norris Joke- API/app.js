@@ -25,10 +25,17 @@ function displayData({value:joke}){
     },random)
 }
 
-//using fetch
+// using fetch
 // btn.addEventListener('click', () =>{
 //     fetch(URL)
-//     .then(data => data.json())
+//     .then(data => {
+//         if(data.ok){
+//             return data.json();
+//         }
+//         else{
+//             throw new Error('something went wrong');
+//         }
+//     })
 //     .then(d => displayData(d))
 //     .catch(err => console.log(err));
 // })
