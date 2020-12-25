@@ -1,16 +1,10 @@
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-const form = document.querySelector('.form');
-const containerWorkouts = document.querySelector('.workouts');
-const inputType = document.querySelector('.form__input--type');
-const inputDistance = document.querySelector('.form__input--distance');
-const inputDuration = document.querySelector('.form__input--duration');
-const inputCadence = document.querySelector('.form__input--cadence');
-const inputElevation = document.querySelector('.form__input--elevation');
+
 
 class Workout{
     date = new Date();
-    id = (new Date() + '').slice(-10);
+    id = (Date.now() + '').slice(-10);
 
     constructor(coords, distance, duration){
         this.coords = coords;
@@ -43,7 +37,13 @@ class Cycling extends Workout{
     }
 }
 
-
+const form = document.querySelector('.form');
+const containerWorkouts = document.querySelector('.workouts');
+const inputType = document.querySelector('.form__input--type');
+const inputDistance = document.querySelector('.form__input--distance');
+const inputDuration = document.querySelector('.form__input--duration');
+const inputCadence = document.querySelector('.form__input--cadence');
+const inputElevation = document.querySelector('.form__input--elevation');
 
 
 class App{
@@ -87,7 +87,25 @@ class App{
         inputCadence.closest('.form__row').classList.toggle('form__row--hidden');
     }
     _newWorkout(e){
+        const validInputs = (...inputs) => inputs.every(i => Number.isFinite(i));
         e.preventDefault();
+
+        const type = inputType.value;
+        const distance = inputDistance.value;
+        const duration = inputDuration.value;
+
+        if(type == 'running'){
+            const cadence = +inputCadence.value;
+            if(!validInputs(distance,duration,cadence)) 
+            return alert('Inputs have to positive numbers!');
+        }
+        if(type == 'cycling'){
+            const elevation = +inputElevation.value;
+            if(!validInputs(distance,duration,elevation)) 
+            return alert('Inputs have to positive numbers!');
+        }
+
+
         inputDistance.value = inputDuration.value = inputCadence.value = inputElevation.value =''
         const {lat,lng} = this.#mapEvent.latlng;
         L.marker([lat,lng])
