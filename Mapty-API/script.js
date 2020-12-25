@@ -16,6 +16,7 @@ class Workout{
         this.coords = coords;
         this.distance = distance;
         this.duration = duration;
+        this.calcPace();
     }
 }
 
@@ -24,11 +25,21 @@ class Running extends Workout{
         super(coords,distance,duration);
         this.cadence = cadence;
     }
+    calcPace(){
+        this.pace = this.duration/this.distance;
+        return this.pace;
+    }
 }
 class Cycling extends Workout{
     constructor(coords,distance,duration,elevationGain){
         super(coords,distance,duration);
         this.elevationGain = elevationGain;
+        this.calcSpeed();
+    }
+    calcSpeed(){
+        //km/hr
+        this.speed = this.distance/(this.duration/60);
+        return this.speed;
     }
 }
 
@@ -51,7 +62,7 @@ class App{
                 alert('Could not access your location');
                  })
             }
-    }
+    }   
 
     _loadMap(position){
             const {latitude,longitude} = position.coords;
