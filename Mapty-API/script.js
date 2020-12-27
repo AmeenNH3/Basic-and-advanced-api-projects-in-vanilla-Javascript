@@ -13,7 +13,7 @@ class Workout{
     }
     _setDescription(){
         const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-        this.description = `${this.type[0].toUpperCase()}${this.type.slice[1]}
+        this.description = `${this.type[0].toUpperCase()}${this.type.slice(1)}
         on ${months[this.date.getMonth()]} ${this.date.getDate()}`;
     }
 }
@@ -57,12 +57,14 @@ const inputElevation = document.querySelector('.form__input--elevation');
 
 class App{
     #map;
+    #mapZoomLevel = 13;
     #mapEvent;
     #workouts = [];
     constructor(){  
         this._getPosition();
         form.addEventListener('submit',this._newWorkout.bind(this));
         inputType.addEventListener('change',this._toggleElevationField)
+        containerWorkouts.addEventListener('click',this._moveToPopup.bind(this));
     }
     _getPosition(){
         if(navigator.geolocation){
@@ -79,7 +81,7 @@ class App{
             // console.log(`https://www.google.com/maps/@${latitude},${longitude},16.39z`);
             const coords = [latitude,longitude];
             console.log(this);
-            this.#map = L.map('map').setView(coords, 13);
+            this.#map = L.map('map').setView(coords, this.#mapZoomLevel);
             
             L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -91,6 +93,12 @@ class App{
         this.#mapEvent = mapE;
         form.classList.remove('hidden');
         inputDistance.focus();
+    }
+    _hideForm(){
+        inputDistance.value = inputDuration.value = inputCadence.value = inputElevation.value ='';
+        form.style.display = 'none';
+        form.classList.add('hidden');
+        setTimeout(()=> form.style.display='grid',1000);
     }
     _toggleElevationField(){
         inputElevation.closest('.form__row').classList.toggle('form__row--hidden');
@@ -125,8 +133,7 @@ class App{
         console.log(workout);
         this._renderWorkoutMarker(workout);
         this._renderWorkout(workout);
-        inputDistance.value = inputDuration.value = inputCadence.value = inputElevation.value =''
-        
+        this._hideForm();
        
     }
     _renderWorkoutMarker(workout){
@@ -141,7 +148,7 @@ class App{
                 className: `${workout.type}-popup`
             })
             )
-        .setPopupContent(`Distance ${workout.distance}`)
+        .setPopupContent(`${workout.type === 'running' ? '🏃‍♂️' : '🚴‍♀️'} ${workout.description}`)
         .openPopup();
     }
     _renderWorkout(workout){
@@ -188,6 +195,20 @@ class App{
             </li`
         }
         form.insertAdjacentHTML('afterend', html)
+    }
+    _moveToPopup(e){
+        const workoutEl = e.target.closest('.workout');
+        if(!workoutEl) return;
+        const workout = this.#workouts.
+        find(work => work.id === workoutEl.dataset.id);
+        console.log(workout);
+
+        this.#map.setView(workout.coords,this.#mapZoomLevel,{
+            animate:true,
+            pan:{
+                duration:1
+            }
+        })
     }
 }
 
